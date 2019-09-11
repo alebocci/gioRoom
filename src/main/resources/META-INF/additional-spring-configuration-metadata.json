@@ -1,0 +1,33 @@
+{
+  "properties": [
+    {
+      "name": "shutter_driver.ip",
+      "type": "java.lang.String",
+      "description": "Ip driver of shutter."
+    },
+    {
+      "name": "shutter_driver.port",
+      "type": "java.lang.Integer",
+      "description": "Port of shutter driver."
+    },
+    {
+      "name": "vase_driver.ip",
+      "type": "java.lang.String",
+      "description": "Ip driver of vase."
+    },
+    {
+      "name": "vase_driver.port",
+      "type": "java.lang.Integer",
+      "description": "Port driver of vase."
+    },
+    {
+      "name": "auth_server.io",
+      "type": "java.lang.String",
+      "description": "Ip of authorization server."
+    },
+    {
+      "name": "auth_server.port",
+      "type": "java.lang.Integer",
+      "description": "Port of authorization server."
+    }
+  ] }
