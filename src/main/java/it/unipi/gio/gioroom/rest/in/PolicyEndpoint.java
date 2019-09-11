@@ -33,11 +33,14 @@ public class PolicyEndpoint {
     @Value("${auth_server.port}")
     private Integer authPort;
 
+    private RestTemplate restTemplate;
+
     private Logic logic;
 
     @Autowired
-    public PolicyEndpoint(Logic logic){
+    public PolicyEndpoint(Logic logic, RestTemplate restTemplate){
         this.logic=logic;
+        this.restTemplate=restTemplate;
     }
 
     @RequestMapping(method = RequestMethod.GET)
@@ -79,7 +82,7 @@ public class PolicyEndpoint {
 
 
     private boolean checkToken(String token){
-       /* RestTemplate restTemplate = new RestTemplate();
+       /*
         String baseAddress = "http://"+authIp+":"+authPort+"/api/authorization";
         try {
             HttpHeaders headers = new HttpHeaders();

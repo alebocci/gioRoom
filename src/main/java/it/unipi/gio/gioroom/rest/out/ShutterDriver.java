@@ -26,11 +26,11 @@ public class ShutterDriver {
         DARK, LOW, MEDIUM, BRIGHT, UNDEFINED
     }
 
-    public ShutterDriver(InetAddress ip, int port){
+    public ShutterDriver(InetAddress ip, int port, RestTemplate restTemplate){
         this.ip = ip;
         this.port = port;
         baseAddress = "http://"+ip.getHostName()+":"+port+"/api/";
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplate;
         connectShutter();
     }
 

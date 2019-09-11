@@ -9,11 +9,14 @@ import it.unipi.gio.gioroom.rest.out.ShutterDriver;
 import it.unipi.gio.gioroom.rest.out.VaseDriver;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.web.client.RestTemplate;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,12 +33,15 @@ public class GioroomApplication {
 	public CopyOnWriteArrayList<Goal> goalList(){return new CopyOnWriteArrayList<>();}
 
 	@Bean
-	public ShutterDriver shutterDriver(Environment env){
+	public ShutterDriver shutterDriver(Environment env, RestTemplate restTemplate){
 		String ip = env.getProperty("shutter_driver.ip");
 		Integer port = env.getProperty("shutter_driver.port",Integer.class);
+		if(port==null){
+			port=8080;
+		}
 		ShutterDriver sh=null;
 		try {
-			sh = new ShutterDriver(InetAddress.getByName(ip),port);
+			sh = new ShutterDriver(InetAddress.getByName(ip),port, restTemplate);
 		} catch (UnknownHostException e) {
 			System.exit(-2);
 		}
@@ -43,12 +49,15 @@ public class GioroomApplication {
 	}
 
 	@Bean
-	public VaseDriver vaseDriver(Environment env){
+	public VaseDriver vaseDriver(Environment env, RestTemplate restTemplate){
 		String ip = env.getProperty("vase_driver.ip");
 		Integer port = env.getProperty("vase_driver.port",Integer.class);
+		if(port==null){
+			port=8090;
+		}
 		VaseDriver vase=null;
 		try {
-			vase = new VaseDriver(InetAddress.getByName(ip),port);
+			vase = new VaseDriver(InetAddress.getByName(ip),port, restTemplate);
 		} catch (UnknownHostException | IllegalArgumentException e) {
 			System.exit(-3);
 		}
@@ -59,7 +68,7 @@ public class GioroomApplication {
 	public PresenceDriver presenceDriver(List<User> userList){return new PresenceDriver(userList);}
 
 	@Bean
-	public LightHourDriver lightHourDriver(){return new LightHourDriver();}
+	public LightHourDriver lightHourDriver(RestTemplate restTemplate){return new LightHourDriver(restTemplate);}
 
 	@Bean //TODO request users list to db
 	public List<User> userList(){return Collections.synchronizedList(new ArrayList<>());}
@@ -67,5 +76,15 @@ public class GioroomApplication {
 	@Bean
 	public Planner planner(ShutterDriver shutter, VaseDriver vase, PresenceDriver presence, LightHourDriver daytime){
 		return new Planner(shutter, vase, presence,daytime);
+	}
+
+	@Bean
+	public RestTemplate restTemplate(
+			RestTemplateBuilder restTemplateBuilder) {
+
+		return restTemplateBuilder
+				.setConnectTimeout(Duration.ofSeconds(10))
+				.setReadTimeout(Duration.ofSeconds(10))
+				.build();
 	}
 }

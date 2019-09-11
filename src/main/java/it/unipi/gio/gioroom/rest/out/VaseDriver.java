@@ -2,6 +2,7 @@ package it.unipi.gio.gioroom.rest.out;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -34,12 +35,12 @@ public class VaseDriver {
     private String baseAddress;
     private RestTemplate restTemplate;
 
-    public VaseDriver(InetAddress ip, int port){
+    public VaseDriver(InetAddress ip, int port, RestTemplate restTemplate){
         if(ip==null) return;
         this.ip = ip;
         this.port = port;
         baseAddress = "http://"+this.ip.getHostName()+":"+port+"/api";
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = restTemplate;
         connectVase();
     }
 

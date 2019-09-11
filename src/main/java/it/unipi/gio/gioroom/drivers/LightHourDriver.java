@@ -3,6 +3,7 @@ package it.unipi.gio.gioroom.drivers;
 import com.fasterxml.jackson.databind.ser.std.StdArraySerializers;
 import it.unipi.gio.gioroom.model.Slot;
 import org.apache.tomcat.jni.Local;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -67,10 +68,15 @@ public class LightHourDriver {
 
     }
     private Slot daylight;
-    private RestTemplate restTemplate = new RestTemplate();
+    private RestTemplate restTemplate;
     private LocalDate today = LocalDate.now();
     private final String appId="2dc9810e31efdc0237e5cc5480b0d431";
     private final String city="Pisa";
+
+    @Autowired
+    public LightHourDriver(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
 
     public Slot getDaylight(){
         if(today.isAfter(LocalDate.now()) || daylight==null){
