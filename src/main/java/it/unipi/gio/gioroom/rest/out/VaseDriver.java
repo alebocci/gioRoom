@@ -155,6 +155,9 @@ public class VaseDriver {
     }
 
     public synchronized void setIp(String ip) {
+        if(ip==null){
+            return;
+        }
         if(!this.ip.getHostName().equals(ip)){
             try {
                 this.ip = InetAddress.getByName(ip);
@@ -170,7 +173,10 @@ public class VaseDriver {
         return port;
     }
 
-    public synchronized void setPort(int port) {
+    public synchronized void setPort(Integer port) {
+        if(port==null){
+            return;
+        }
         baseAddress = "http://"+this.ip+":"+port+"/api";
         this.port = port;
     }
