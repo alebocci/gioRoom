@@ -2,10 +2,7 @@ package it.unipi.gio.gioroom.rest.out;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
@@ -52,7 +49,10 @@ public class VaseDriver {
         ResponseEntity<Void> response;
         try {
             String request = "{\"port\":\""+serverPort+"\"}";
-            HttpEntity<String> entity = new HttpEntity<>(request);
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<String> entity = new HttpEntity<>(request, headers);
+
             restTemplate.exchange(baseAddress+"/goal/disable", HttpMethod.PUT, entity,Void.class);
         }catch (HttpStatusCodeException | ResourceAccessException e){
             //do nothing
