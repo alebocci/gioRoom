@@ -2,6 +2,7 @@ package it.unipi.gio.gioroom.rest.out;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -12,6 +13,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ShutterDriver {
 
@@ -21,6 +24,9 @@ public class ShutterDriver {
     private int port;
     private String baseAddress;
     private RestTemplate restTemplate;
+
+    @Value("${local.server.port}")
+    private int serverPort;
 
     public enum LightLevel {
         DARK, LOW, MEDIUM, BRIGHT, UNDEFINED
@@ -37,7 +43,10 @@ public class ShutterDriver {
     private void connectShutter(){
         ResponseEntity<Void> response;
         try {
-            restTemplate.exchange(baseAddress+"goal/disable", HttpMethod.PUT, HttpEntity.EMPTY,Void.class);
+            HashMap<String,String> request = new HashMap<>();
+            request.put("port",""+port);
+            HttpEntity<Map<String,String>> entity = new HttpEntity<>(request);
+            restTemplate.exchange(baseAddress+"goal/disable", HttpMethod.PUT, entity,Void.class);
         }catch (HttpStatusCodeException | ResourceAccessException e){
             //do nothing
         }
