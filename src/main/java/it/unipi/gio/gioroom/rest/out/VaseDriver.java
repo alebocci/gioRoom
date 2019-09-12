@@ -2,8 +2,6 @@ package it.unipi.gio.gioroom.rest.out;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -54,7 +52,7 @@ public class VaseDriver {
         ResponseEntity<Void> response;
         try {
             HashMap<String,String> request = new HashMap<>();
-            request.put("port",""+serverPort);
+            request.put("port","\""+serverPort+"\"");
             HttpEntity<Map<String,String>> entity = new HttpEntity<>(request);
             restTemplate.exchange(baseAddress+"/goal/disable", HttpMethod.PUT, entity,Void.class);
         }catch (HttpStatusCodeException | ResourceAccessException e){

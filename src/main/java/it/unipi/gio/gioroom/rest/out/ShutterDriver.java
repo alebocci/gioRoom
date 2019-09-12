@@ -44,7 +44,7 @@ public class ShutterDriver {
         ResponseEntity<Void> response;
         try {
             HashMap<String,String> request = new HashMap<>();
-            request.put("port",""+serverPort);
+            request.put("port","\""+serverPort+"\"");
             HttpEntity<Map<String,String>> entity = new HttpEntity<>(request);
             restTemplate.exchange(baseAddress+"goal/disable", HttpMethod.PUT, entity,Void.class);
         }catch (HttpStatusCodeException | ResourceAccessException e){
