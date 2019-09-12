@@ -38,15 +38,15 @@ public class VaseDriver {
     private String baseAddress;
     private RestTemplate restTemplate;
 
-    @Value("${local.server.port}")
-    private int serverPort;
+    private String serverPort;
 
-    public VaseDriver(InetAddress ip, int port, RestTemplate restTemplate){
+    public VaseDriver(InetAddress ip, int port, RestTemplate restTemplate, String serverPort){
         if(ip==null) return;
         this.ip = ip;
         this.port = port;
         baseAddress = "http://"+this.ip.getHostName()+":"+port+"/api";
         this.restTemplate = restTemplate;
+        this.serverPort=serverPort;
         connectVase();
     }
 
@@ -54,7 +54,7 @@ public class VaseDriver {
         ResponseEntity<Void> response;
         try {
             HashMap<String,String> request = new HashMap<>();
-            request.put("port",""+port);
+            request.put("port",""+serverPort);
             HttpEntity<Map<String,String>> entity = new HttpEntity<>(request);
             restTemplate.exchange(baseAddress+"/goal/disable", HttpMethod.PUT, entity,Void.class);
         }catch (HttpStatusCodeException | ResourceAccessException e){

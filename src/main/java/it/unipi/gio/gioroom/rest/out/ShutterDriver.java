@@ -25,18 +25,18 @@ public class ShutterDriver {
     private String baseAddress;
     private RestTemplate restTemplate;
 
-    @Value("${local.server.port}")
-    private int serverPort;
+    private String serverPort;
 
     public enum LightLevel {
         DARK, LOW, MEDIUM, BRIGHT, UNDEFINED
     }
 
-    public ShutterDriver(InetAddress ip, int port, RestTemplate restTemplate){
+    public ShutterDriver(InetAddress ip, int port, RestTemplate restTemplate, String serverPort){
         this.ip = ip;
         this.port = port;
         baseAddress = "http://"+ip.getHostName()+":"+port+"/api/";
         this.restTemplate = restTemplate;
+        this.serverPort=serverPort;
         connectShutter();
     }
 
@@ -44,7 +44,7 @@ public class ShutterDriver {
         ResponseEntity<Void> response;
         try {
             HashMap<String,String> request = new HashMap<>();
-            request.put("port",""+port);
+            request.put("port",""+serverPort);
             HttpEntity<Map<String,String>> entity = new HttpEntity<>(request);
             restTemplate.exchange(baseAddress+"goal/disable", HttpMethod.PUT, entity,Void.class);
         }catch (HttpStatusCodeException | ResourceAccessException e){

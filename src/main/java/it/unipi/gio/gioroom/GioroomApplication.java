@@ -36,12 +36,13 @@ public class GioroomApplication {
 	public ShutterDriver shutterDriver(Environment env, RestTemplate restTemplate){
 		String ip = env.getProperty("shutter_driver.ip");
 		Integer port = env.getProperty("shutter_driver.port",Integer.class);
+		String serverPort = env.getProperty("server.port");
 		if(port==null){
 			port=8080;
 		}
 		ShutterDriver sh=null;
 		try {
-			sh = new ShutterDriver(InetAddress.getByName(ip),port, restTemplate);
+			sh = new ShutterDriver(InetAddress.getByName(ip),port, restTemplate, serverPort);
 		} catch (UnknownHostException e) {
 			System.exit(-2);
 		}
@@ -52,12 +53,13 @@ public class GioroomApplication {
 	public VaseDriver vaseDriver(Environment env, RestTemplate restTemplate){
 		String ip = env.getProperty("vase_driver.ip");
 		Integer port = env.getProperty("vase_driver.port",Integer.class);
+		String serverPort = env.getProperty("server.port");
 		if(port==null){
 			port=8090;
 		}
 		VaseDriver vase=null;
 		try {
-			vase = new VaseDriver(InetAddress.getByName(ip),port, restTemplate);
+			vase = new VaseDriver(InetAddress.getByName(ip),port, restTemplate,serverPort);
 		} catch (UnknownHostException | IllegalArgumentException e) {
 			System.exit(-3);
 		}
