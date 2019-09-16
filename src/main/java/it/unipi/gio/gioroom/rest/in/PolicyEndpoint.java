@@ -2,8 +2,6 @@ package it.unipi.gio.gioroom.rest.in;
 
 
 import it.unipi.gio.gioroom.Logic;
-import it.unipi.gio.gioroom.management.Schedule;
-import it.unipi.gio.gioroom.model.PolicyScheduleEntry;
 import it.unipi.gio.gioroom.model.SchedulePolicy;
 import it.unipi.gio.gioroom.model.Slot;
 import it.unipi.gio.gioroom.model.User;
@@ -11,10 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;

@@ -40,9 +40,11 @@ public class GioroomApplication {
 		if(port==null){
 			port=8080;
 		}
+
 		ShutterDriver sh=null;
 		try {
-			sh = new ShutterDriver(InetAddress.getByName(ip),port, restTemplate, serverPort);
+			String localIp = InetAddress.getLocalHost().getHostAddress();
+			sh = new ShutterDriver(InetAddress.getByName(ip),port, restTemplate, localIp, serverPort);
 		} catch (UnknownHostException e) {
 			System.exit(-2);
 		}
@@ -59,7 +61,8 @@ public class GioroomApplication {
 		}
 		VaseDriver vase=null;
 		try {
-			vase = new VaseDriver(InetAddress.getByName(ip),port, restTemplate,serverPort);
+			String localIp = InetAddress.getLocalHost().getHostAddress();
+			vase = new VaseDriver(InetAddress.getByName(ip),port, restTemplate,localIp,serverPort);
 		} catch (UnknownHostException | IllegalArgumentException e) {
 			System.exit(-3);
 		}
@@ -85,8 +88,8 @@ public class GioroomApplication {
 			RestTemplateBuilder restTemplateBuilder) {
 
 		return restTemplateBuilder
-				.setConnectTimeout(Duration.ofSeconds(10))
-				.setReadTimeout(Duration.ofSeconds(10))
+				.setConnectTimeout(Duration.ofSeconds(2))
+				.setReadTimeout(Duration.ofSeconds(2))
 				.build();
 	}
 }

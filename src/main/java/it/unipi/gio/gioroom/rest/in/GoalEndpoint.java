@@ -82,7 +82,8 @@ public class GoalEndpoint {
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity setNewGoal(@RequestBody Goal g) {
         LOG.debug("Set new goal request");
-        if(!g.checkValidity()){
+        if(!g.checkValidity() || g.getBounds().containsKey(Goal.Property.TEMPERATURE) ||
+            g.getBounds().containsKey(Goal.Property.SHUTTER_HEIGHT)){
             LOG.debug("Set new goal refused, bad request");
             return ResponseEntity.badRequest().build();
         }
@@ -154,7 +155,7 @@ public class GoalEndpoint {
     }
 
     @ExceptionHandler({IllegalArgumentException.class, HttpMessageNotReadableException.class})
-    void handleBadRequests(HttpServletResponse response) throws IOException {
+    public void handleBadRequests(HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(), "JSON representing a goal is not well formed.");
     }
 

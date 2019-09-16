@@ -4,7 +4,6 @@ import it.unipi.gio.gioroom.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalTime;
-import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +36,7 @@ public class PresenceDriver {
     public synchronized boolean addUserPresence(User u, LocalTime duration){
         checkExpiration();
         if(users!=null && !users.contains(u)){
-            return false;
+             return false;
         }
         LocalTime now = LocalTime.now();
         LocalTime expiration = LocalTime.now().plusHours(duration.getHour()).plusMinutes(duration.getMinute());
@@ -51,9 +50,11 @@ public class PresenceDriver {
     public synchronized boolean removeUserPresence(User u){
         checkExpiration();
         if(users!=null && !users.contains(u)){
-            return false;
+             return false;
         }
-        return usersPresent.remove(u)!=null;
+        usersPresent.remove(u);
+        return true;
+        //return usersPresent.remove(u)!=null;
     }
 
 

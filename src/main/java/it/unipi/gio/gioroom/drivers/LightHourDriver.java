@@ -1,18 +1,14 @@
 package it.unipi.gio.gioroom.drivers;
 
-import com.fasterxml.jackson.databind.ser.std.StdArraySerializers;
 import it.unipi.gio.gioroom.model.Slot;
-import org.apache.tomcat.jni.Local;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.*;
-import java.util.Calendar;
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.TimeZone;
 
 public class LightHourDriver {

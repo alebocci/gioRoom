@@ -22,25 +22,26 @@ public class ShutterDriver {
     private String baseAddress;
     private RestTemplate restTemplate;
 
-    private String serverPort;
+    private String serverEndpoint;
 
     public enum LightLevel {
         DARK, LOW, MEDIUM, BRIGHT, UNDEFINED
     }
 
-    public ShutterDriver(InetAddress ip, int port, RestTemplate restTemplate, String serverPort){
+    public ShutterDriver(InetAddress ip, int port, RestTemplate restTemplate, String serverPort, String serverIp){
         this.ip = ip;
         this.port = port;
         baseAddress = "http://"+ip.getHostName()+":"+port+"/api/";
         this.restTemplate = restTemplate;
-        this.serverPort=serverPort;
+        this.serverEndpoint=serverPort+":"+serverIp+"/api/goals/ping";
         connectShutter();
     }
 
     private void connectShutter(){
         ResponseEntity<Void> response;
         try {
-            String request = "{\"port\":\""+serverPort+"\"}";
+            String request = "{\"endpoint\":\""+serverEndpoint+"\"}";
+
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> entity = new HttpEntity<>(request, headers);
@@ -58,7 +59,7 @@ public class ShutterDriver {
         }catch (HttpStatusCodeException e){
             status= e.getStatusCode();
         }catch (ResourceAccessException e) {
-                status = HttpStatus.SERVICE_UNAVAILABLE;
+            status = HttpStatus.SERVICE_UNAVAILABLE;
         }
         return status;
     }
@@ -147,7 +148,6 @@ public class ShutterDriver {
                 //do nothing
             }
         }
-
     }
 
     public synchronized int getPort() {
@@ -165,6 +165,7 @@ public class ShutterDriver {
     public synchronized void setIpPort(String ip, int port){
         setIp(ip);
         setPort(port);
+        closeShutter();
     }
 
 

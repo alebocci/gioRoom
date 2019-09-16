@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -108,8 +107,6 @@ public class Planner {
     private void adjustTemperature(float delta){
         float sig = Math.signum(delta);
         float val = Math.abs(delta);
-
-
     }
 
     private void adjustBrightness(float delta){
@@ -179,12 +176,21 @@ public class Planner {
     }
 
     private void adjustVaseMoisture(float delta){
+
+        //wait time to stabilize precedent action
+        if(LocalTime.now().compareTo(waitWatering)<0){
+            LOG.info("Wait to precedent watering action to became effective");
+            return;
+        }
+
         float sig = Math.signum(delta);
         float val = Math.abs(delta);
 
         if(sig<0){
             vase.watering();
+            waitWatering = LocalTime.now().plusSeconds(secondsWatering);
         }
+
     }
     private State sense(){
         Float temperature = vase.getTemperatureValue();

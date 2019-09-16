@@ -43,7 +43,21 @@ public class PresenceEndpoint {
 
     @RequestMapping(method = RequestMethod.PUT)
     public ResponseEntity setPresence(@RequestBody PresenceBody body) {
+        if(body.user==null || body.duration==null){
+            return ResponseEntity.badRequest().build();
+        }
         if(!presenceDriver.addUserPresence(body.user,body.duration)){
+            return ResponseEntity.badRequest().build();
+        }
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity deletePresence(@RequestBody PresenceBody body) {
+        if(body.user==null){
+            return ResponseEntity.badRequest().build();
+        }
+        if(!presenceDriver.removeUserPresence(body.user)){
             return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok().build();

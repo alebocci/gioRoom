@@ -9,8 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class VaseDriver {
      public static class VaseResponse{
@@ -33,22 +32,22 @@ public class VaseDriver {
     private String baseAddress;
     private RestTemplate restTemplate;
 
-    private String serverPort;
+    private String serverEndpoint;
 
-    public VaseDriver(InetAddress ip, int port, RestTemplate restTemplate, String serverPort){
+    public VaseDriver(InetAddress ip, int port, RestTemplate restTemplate,  String serverPort, String serverIp){
         if(ip==null) return;
         this.ip = ip;
         this.port = port;
         baseAddress = "http://"+this.ip.getHostName()+":"+port+"/api";
         this.restTemplate = restTemplate;
-        this.serverPort=serverPort;
+        this.serverEndpoint=serverPort+":"+serverIp+"/api/goals/ping";
         connectVase();
     }
 
     private void connectVase(){
         ResponseEntity<Void> response;
         try {
-            String request = "{\"port\":\""+serverPort+"\"}";
+            String request = "{\"endpoint\":\""+serverEndpoint+"\"}";
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<String> entity = new HttpEntity<>(request, headers);
@@ -190,6 +189,7 @@ public class VaseDriver {
     public synchronized void setIpPort(String ip, int port){
         setIp(ip);
         setPort(port);
+        connectVase();
     }
 }
 
