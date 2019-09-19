@@ -2,7 +2,6 @@ package it.unipi.gio.gioroom.rest.out;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.ResourceAccessException;
@@ -10,8 +9,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ShutterDriver {
 
@@ -23,10 +20,13 @@ public class ShutterDriver {
     private RestTemplate restTemplate;
 
     private String serverEndpoint;
+    private ShutterStatus lastStatus = ShutterStatus.MIDDLE;
 
     public enum LightLevel {
         DARK, LOW, MEDIUM, BRIGHT, UNDEFINED
     }
+
+    public enum ShutterStatus{CLOSED, OPENED, MIDDLE};
 
     public ShutterDriver(InetAddress ip, int port, RestTemplate restTemplate, String serverPort, String serverIp){
         this.ip = ip;
@@ -61,6 +61,7 @@ public class ShutterDriver {
         }catch (ResourceAccessException e) {
             status = HttpStatus.SERVICE_UNAVAILABLE;
         }
+        setLastStatus(ShutterStatus.OPENED);
         return status;
     }
 
@@ -74,6 +75,7 @@ public class ShutterDriver {
         }catch (ResourceAccessException e) {
             status = HttpStatus.SERVICE_UNAVAILABLE;
         }
+        setLastStatus(ShutterStatus.CLOSED);
         return status;
     }
 
@@ -87,6 +89,7 @@ public class ShutterDriver {
         }catch (ResourceAccessException e) {
             status = HttpStatus.SERVICE_UNAVAILABLE;
         }
+        setLastStatus(ShutterStatus.MIDDLE);
         return status;
     }
 
@@ -103,6 +106,7 @@ public class ShutterDriver {
         }catch (ResourceAccessException e) {
             status = HttpStatus.SERVICE_UNAVAILABLE;
         }
+        setLastStatus(ShutterStatus.MIDDLE);
         return status;
     }
 
@@ -116,6 +120,7 @@ public class ShutterDriver {
         }catch (ResourceAccessException e) {
             status = HttpStatus.SERVICE_UNAVAILABLE;
         }
+        setLastStatus(ShutterStatus.MIDDLE);
         return status;
     }
 
@@ -129,6 +134,7 @@ public class ShutterDriver {
         }catch (ResourceAccessException e) {
             status = HttpStatus.SERVICE_UNAVAILABLE;
         }
+        setLastStatus(ShutterStatus.MIDDLE);
         return status;
     }
 
@@ -234,4 +240,11 @@ public class ShutterDriver {
         }
     }
 
+    public synchronized ShutterStatus getLastStatus() {
+        return lastStatus;
+    }
+
+    private synchronized void setLastStatus(ShutterStatus lastStatus) {
+        this.lastStatus = lastStatus;
+    }
 }

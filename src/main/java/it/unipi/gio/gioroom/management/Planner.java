@@ -38,9 +38,6 @@ public class Planner {
     private final int secondsStandardWait = 90;
     private final int secondsErrorWait = 15;
 
-    private enum ShutterStatus{CLOSED, OPENED, MIDDLE};
-    private ShutterStatus lastStatus = ShutterStatus.MIDDLE;
-
     private float checkBrightness=0f;
 
     @Autowired
@@ -112,7 +109,7 @@ public class Planner {
     private void adjustBrightness(float delta){
         //wait time to stabilize precedent action
         if(LocalTime.now().compareTo(waitShutter)<0){
-            LOG.info("Wait to precedent shutter action to became effective");
+            LOG.info("Wait to precedent shutter action to became effective until "+waitShutter.toString());
             return;
         }
         float sig = Math.signum(delta);
@@ -134,9 +131,8 @@ public class Planner {
                         break;
                     case LOW:
                     case DARK:
-                        if(lastStatus!=ShutterStatus.CLOSED) {
+                        if(shutter.getLastStatus()!= ShutterDriver.ShutterStatus.CLOSED) {
                             shutter.closeShutter();
-                            lastStatus = ShutterStatus.CLOSED;
                             LOG.info("Close Shutter");
                         }else{
                             LOG.info("Shutter already closed");
@@ -156,9 +152,8 @@ public class Planner {
                         break;
                     case MEDIUM:
                     case BRIGHT:
-                        if(lastStatus!=ShutterStatus.OPENED) {
+                        if(shutter.getLastStatus()!= ShutterDriver.ShutterStatus.OPENED) {
                             shutter.openShutter();
-                            lastStatus = ShutterStatus.OPENED;
                             LOG.info("Open shutter");
                         }else {
                             LOG.info("Shutter already opened");
@@ -170,7 +165,6 @@ public class Planner {
 
         }
         shutter.tiltShutter(lastLevel);
-        lastStatus=ShutterStatus.MIDDLE;
         waitShutter = LocalTime.now().plusSeconds(secondsShutter);
         LOG.info("Tilt shutter to {}",lastLevel);
     }
