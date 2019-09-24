@@ -5,13 +5,13 @@ import java.util.List;
 
 public class PolicyScheduleEntry {
     private Slot slot;
-    private List<User> users;
+    private List<List<User>> users;
 
     public PolicyScheduleEntry(){
         users= new ArrayList<>();
     }
 
-    public PolicyScheduleEntry(Slot slot, List<User> users) {
+    public PolicyScheduleEntry(Slot slot, List<List<User>> users) {
         this.slot = slot;
         this.users = users;
     }
@@ -24,12 +24,23 @@ public class PolicyScheduleEntry {
         this.slot = slot;
     }
 
-    public List<User> getUsers() {
+    public List<List<User>> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(List<List<User>> users) {
         this.users = users;
+    }
+
+    public boolean containsUser(User user){
+        for(List<User> list : users){
+            for(User u : list){
+                if(u.equals(user)){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

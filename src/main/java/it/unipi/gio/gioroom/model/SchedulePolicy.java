@@ -20,7 +20,7 @@ public class SchedulePolicy {
         this.schedule = schedule;
     }
 
-    public boolean addSlot(Slot slot, List<User> users){
+    public boolean addSlot(Slot slot, List<List<User>> users){
         PolicyScheduleEntry newEntry =new PolicyScheduleEntry(slot, users);
         schedule.add(newEntry);
         if(!checkScheduleValidity()){
@@ -53,16 +53,18 @@ public class SchedulePolicy {
                 return false;
             }
 
-            for(User u : thisEntry.getUsers()){
-                if(!nextEntry.getUsers().contains(u)){
-                    return false;
+            for(List<User> l : thisEntry.getUsers()){
+                for(User u : l) {
+                    if (!nextEntry.containsUser(u)) {
+                        return false;
+                    }
                 }
             }
         }
         return true;
     }
 
-    public List<User> getUsersAtTime(LocalTime time){
+    public List<List<User>> getUsersAtTime(LocalTime time){
         Slot now = new Slot(LocalTime.MIN, time);
         schedule.sort(Comparator.comparing(s -> s.getSlot().getStart()));
         for (PolicyScheduleEntry e : schedule){
@@ -78,7 +80,11 @@ public class SchedulePolicy {
     }
 
     public List<User> getUserList(){
-        return schedule.get(0).getUsers();
+        List<User> userList = new ArrayList<>();
+        for(List<User> list : schedule.get(0).getUsers()){
+            userList.addAll(list);
+        }
+        return userList;
     }
 
 

@@ -49,12 +49,13 @@ public class Planner {
     }
 
     public int plan(List<User> users ,Logic.Policy policy, SchedulePolicy schedulePolicy, Schedule schedule){
-        List<User> usersNow;
+        List<List<User>> usersNow;
         //user list with priority at this time, if priority is enabled
         if(schedulePolicy.getUsersAtTime(LocalTime.now())!=null){
             usersNow = new ArrayList<>(schedulePolicy.getUsersAtTime(LocalTime.now()));
         }else{
-            usersNow = new ArrayList<>(users);
+            usersNow = new ArrayList<>();
+            usersNow.add(users);
             policy = Logic.Policy.AVG;
         }
 
@@ -213,7 +214,7 @@ public class Planner {
         }
     }
 
-    private Goal goalState(List<User> users, Logic.Policy policy, Schedule schedule){
+    private Goal goalState(List<List<User>> users, Logic.Policy policy, Schedule schedule){
         List<Goal> goalSlot =schedule.goalsAtTime(LocalTime.now()).stream()
                 .filter(g->!g.getCondition().getPresence() || presence.userPresent(g.getUser()))
                 .collect(Collectors.toList());
@@ -282,16 +283,34 @@ public class Planner {
         return new Goal.Bound(avg-smallestGap,avg+smallestGap);
     }
 
-    private Goal.Bound priority(Goal.Property property, List<Goal> goals, List<User> users){
-        for(User u : users) {
+    private Goal.Bound priority(Goal.Property property, List<Goal> goals, List<List<User>> users){
+        //TODO avg
+        for(List<User> list : users){
+            for (User u : list) {
+                for (Goal g : goals) {
+                    if (g.getUser().equals(u)) {
+                        Goal.Bound b = g.getBounds().get(property);
+                        if (b != null) {
+                            return b;
+                        }
+                    }
+                }
+            }
+
+        }
+        return null;
+
+        /*for (User u : users) {
             for (Goal g : goals) {
-                if(g.getUser().equals(u)){
+                if (g.getUser().equals(u)) {
                     Goal.Bound b = g.getBounds().get(property);
-                    if(b!=null){return b;}
+                    if (b != null) {
+                        return b;
+                    }
                 }
             }
         }
-        return null;
+        return null;*/
     }
 
 

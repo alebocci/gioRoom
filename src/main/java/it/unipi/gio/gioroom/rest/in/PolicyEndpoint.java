@@ -57,7 +57,7 @@ public class PolicyEndpoint {
     }
 
     @RequestMapping(value="/priority",method = RequestMethod.PUT)
-    public ResponseEntity setPriority(@RequestHeader("Authorization") String token,@RequestBody List<User> users) {
+    public ResponseEntity setPriority(@RequestHeader("Authorization") String token,@RequestBody List<List<User>> users) {
         LOG.info("Set policy priority request, token auth: {}",token);
         if(!checkToken(token)){return ResponseEntity.status(HttpStatus.FORBIDDEN).build();}
         if(users==null || users.isEmpty()){return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();}
